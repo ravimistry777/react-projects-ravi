@@ -1,0 +1,33 @@
+.car-section { padding: 6rem 0; min-height: 80vh; display:flex; align-items:center; }
+.section-header { text-align:center; margin-bottom: 3rem; }
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300; letter-spacing:4px;
+  background: linear-gradient(45deg,#fff,#D4AF37,#FFD700);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+}
+.title-underline { width:140px; height:4px; margin:1rem auto 0; background: linear-gradient(90deg, transparent, #D4AF37, #FFD700, transparent); border-radius:2px; }
+
+.cars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: stretch;
+  z-index: 2;
+}
+
+/* When a specific card is hovered (parent-class controlled), blur other cards */
+.cars-grid.has-hover .car-card:not(.hovered) {
+  opacity: 0.16;
+  transform: scale(0.96);
+  filter: blur(4px);
+  pointer-events: none; /* prevents accidental hover on blurred cards */
+}
+
+/* hovered one stays interactive */
+.car-card.hovered { pointer-events: auto; z-index: 20; transform: scale(1.03); }
+
+/* divider */
+.section-divider { height:1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent); margin:3rem auto 0; width:60%; }
