@@ -1,0 +1,376 @@
+.home-classic {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* hero sec */
+
+.hero-classic {
+  background: linear-gradient(135deg, #0c0c0c 0%, #2d2d2d 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-classic::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(139, 0, 0, 0.1) 0%, rgba(178, 34, 34, 0.05) 100%);
+  clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: #8B0000;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.hero-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #8B0000;
+  margin-top: 1rem;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 3rem;
+  max-width: 500px;
+  font-weight: 300;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-classic {
+  padding: 14px 32px;
+  border-radius: 0;
+  border: 2px solid transparent;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.btn-classic.primary {
+  background: #8B0000;
+  border-color: #8B0000;
+  color: white;
+}
+
+.btn-classic.primary:hover {
+  background: #a52a2a;
+  border-color: #a52a2a;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+}
+
+.btn-classic.outline {
+  background: transparent;
+  border-color: white;
+  color: white;
+}
+
+.btn-classic.outline:hover {
+  background: white;
+  color: #0c0c0c;
+  transform: translateY(-2px);
+}
+
+.btn-classic.large {
+  padding: 16px 40px;
+  font-size: 1rem;
+}
+
+/* hero states */
+
+.hero-stats {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+}
+
+.stat-col {
+  text-align: left;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #8B0000;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-image {
+  position: relative;
+  z-index: 2;
+}
+
+.image-container {
+  position: relative;
+  height: 600px;
+  
+}
+
+.main-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 3px solid #8B0000;
+  background: linear-gradient(45deg, #1a1a1a, #333);
+  filter: grayscale(100%);
+}
+
+.image-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 3px solid #8B0000;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.floating-badge {
+  position: absolute;
+  bottom: 30px;
+  right: -20px;
+  background: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+.floating-badge i {
+  color: #8B0000;
+  font-size: 1.2rem;
+}
+
+.floating-badge span {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* FEatures */
+
+.features-classic {
+  padding: 100px 0;
+  background: #f8f9fa;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.feature-card-classic {
+  background: white;
+  padding: 3rem 2rem;
+  text-align: center;
+  height: 100%;
+  border: 1px solid #eaeaea;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.feature-card-classic::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #8B0000;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.feature-card-classic:hover::before {
+  transform: scaleX(1);
+}
+
+.feature-card-classic:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 2rem;
+  background: #f8f9fa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #8B0000;
+  transition: all 0.3s ease;
+}
+
+.feature-card-classic:hover .feature-icon {
+  background: #8B0000;
+  color: white;
+  transform: rotate(5deg);
+}
+
+.feature-card-classic h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.feature-card-classic p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* call to action buttons/section */
+
+.cta-classic {
+  padding: 100px 0;
+  background: #0c0c0c;
+  color: white;
+  text-align: center;
+}
+
+.cta-classic h2 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.cta-classic p {
+  font-size: 1.1rem;
+  color: #cccccc;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+ 
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+ 
+  .hero-buttons {
+    flex-direction: column;
+  }
+ 
+  .btn-classic {
+    width: 100%;
+    text-align: center;
+  }
+ 
+  .hero-image {
+    margin-top: 3rem;
+  }
+ 
+  .image-container {
+    height: 400px;
+  }
+ 
+  .floating-badge {
+    right: 10px;
+  }
+ 
+  .stat-col {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+}
+
+.feature-card-classic,
+.btn-classic,
+.hero-badge {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cta-classic {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cta-video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.25;
+}
