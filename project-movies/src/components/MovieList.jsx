@@ -3,7 +3,7 @@ import { Row, Col, Pagination } from 'react-bootstrap';
 import MovieCard from './MovieCard';
 import FilterSection from './FilterSection';
 
-const MovieList = ({ movies = [], filteredMovies = [], setFilteredMovies }) => {
+const MovieList = ({ movies = [], filteredMovies = [], setFilteredMovies, onEditMovie }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 6;
 
@@ -42,7 +42,10 @@ const MovieList = ({ movies = [], filteredMovies = [], setFilteredMovies }) => {
         {currentMovies.length > 0 ? (
           currentMovies.map(movie => (
             <Col key={movie.id} xs={12} sm={6} md={4} lg={4}>
-              <MovieCard movie={movie} />
+              <MovieCard 
+                movie={movie} 
+                onEdit={onEditMovie}
+              />
             </Col>
           ))
         ) : (

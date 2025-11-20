@@ -1,8 +1,8 @@
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const Navigation = () => {
+const Navigation = ({ onAddMovieClick }) => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="shadow">
       <Container>
@@ -15,6 +15,13 @@ const Navigation = () => {
             <Nav.Link as={Link} to="/">
               HOME
             </Nav.Link>
+            <Button 
+              variant="outline-success" 
+              className="ms-2"
+              onClick={onAddMovieClick}
+            >
+              + Add Movie
+            </Button>
           </Nav>
         </Navbar.Collapse>
       </Container>
