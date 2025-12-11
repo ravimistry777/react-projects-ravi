@@ -121,3 +121,9 @@ export const deleteProductAsync = (id) => {
     }
   };
 };
+
+export const resetProductCreation = () => (dispatch) => {
+  dispatch({
+    type: "RESET_PRODUCT_CREATION"
+  });
+};

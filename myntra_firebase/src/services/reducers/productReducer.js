@@ -27,6 +27,9 @@ export const productReducer = (state = initialState, action) => {
     case "UPDATE_PRODUCT":
       return { ...state, isCreated: true };
 
+    case "RESET_PRODUCT_CREATION":
+      return { ...state, isCreated: false, error: null }; 
+
     default:
       return state;
   }

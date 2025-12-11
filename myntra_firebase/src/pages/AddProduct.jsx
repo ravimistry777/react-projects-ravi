@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Container, Form, Button, Card, Row, Col, Alert } from "react-bootstrap";
+import { Container, Form, Button, Card, Row, Col, Alert, ProgressBar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductAsync } from "../services/actions/productAction";
 import { useNavigate } from "react-router-dom";
-import { Plus, Image } from "react-bootstrap-icons";
+import { Plus, Image, Upload, X } from "react-bootstrap-icons";
 import { useAuth } from "../context/AuthContext";
+import { uploadFile } from "../services/uploadFile";
+import { resetProductCreation } from "../services/actions/productAction";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -17,27 +19,95 @@ const AddProduct = () => {
     desc: "",
     price: "",
     category: "",
-    images: ["", "", "", ""],
+    images: [],
   });
 
   const [message, setMessage] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   useEffect(() => {
-    // Redirect if not logged in
+    dispatch(resetProductCreation());
     if (!currentUser) {
       navigate("/");
     }
-  }, [currentUser, navigate]);
+  }, [dispatch, currentUser, navigate]);
+
+  // Handle file upload
+  const handleFileUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // File validation
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      setMessage("Please upload only JPG, PNG or WebP images");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage("Image size should be less than 5MB");
+      return;
+    }
+
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+    const newPreviewUrls = [...previewUrls];
+    newPreviewUrls[index] = previewUrl;
+    setPreviewUrls(newPreviewUrls);
+
+    setUploading(true);
+    setUploadProgress(30);
+
+    try {
+      // Upload to Cloudinary
+      const imageUrl = await uploadFile(file);
+      setUploadProgress(70);
+
+      // images array
+      const updatedImages = [...input.images];
+      updatedImages[index] = imageUrl;
+      setInput({ ...input, images: updatedImages });
+
+      setUploadProgress(100);
+      setTimeout(() => {
+        setUploading(false);
+        setUploadProgress(0);
+      }, 500);
+
+    } catch (error) {
+      console.error("Upload error:", error);
+      setMessage("Image upload failed. Please try again.");
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  // Remove image
+  const removeImage = (index) => {
+    const updatedImages = [...input.images];
+    updatedImages[index] = "";
+    setInput({ ...input, images: updatedImages });
+
+    const updatedPreviews = [...previewUrls];
+    if (updatedPreviews[index]) {
+      URL.revokeObjectURL(updatedPreviews[index]);
+    }
+    updatedPreviews[index] = "";
+    setPreviewUrls(updatedPreviews);
+  };
+
+  // Handle text input for image url
+  const handleImageUrlChange = (index, value) => {
+    const updatedImages = [...input.images];
+    updatedImages[index] = value;
+    setInput({ ...input, images: updatedImages });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
-  };
-
-  const handleImageChange = (index, value) => {
-    const updated = [...input.images];
-    updated[index] = value;
-    setInput({ ...input, images: updated });
   };
 
   const submitHandler = (e) => {
@@ -48,19 +118,20 @@ const AddProduct = () => {
       return;
     }
 
-    // Validate required fields
     if (!input.title || !input.price || !input.category) {
       setMessage("Please fill all required fields");
       return;
     }
 
-    // Prepare product data for Firebase
+    // Filterout empty images
+    const validImages = input.images.filter(img => img && img.trim() !== "");
+
     const productData = {
       title: input.title,
       desc: input.desc,
       price: parseFloat(input.price),
       category: input.category,
-      images: input.images.filter(img => img.trim() !== ""), // Remove empty image URLs
+      images: validImages,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy: currentUser.uid
@@ -72,11 +143,20 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (isCreated) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         navigate("/admin/products");
       }, 1500);
+      return () => clearTimeout(timer);
     }
   }, [isCreated, navigate]);
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => {
+        if (url) URL.revokeObjectURL(url);
+      });
+    };
+  }, []);
 
   if (!currentUser) {
     return (
@@ -125,7 +205,7 @@ const AddProduct = () => {
 
         {/* MESSAGES */}
         {message && (
-          <Alert variant="danger" className="mb-4">
+          <Alert variant="danger" className="mb-4" onClose={() => setMessage("")} dismissible>
             {message}
           </Alert>
         )}
@@ -136,15 +216,28 @@ const AddProduct = () => {
           </Alert>
         )}
         
+        {uploading && (
+          <Alert variant="info" className="mb-4">
+            <div className="d-flex align-items-center gap-2">
+              <div className="spinner-border spinner-border-sm" role="status"></div>
+              <span>Uploading image... {uploadProgress}%</span>
+            </div>
+            <ProgressBar now={uploadProgress} className="mt-2" />
+          </Alert>
+        )}
+        
         {loading && (
           <Alert variant="info" className="mb-4">
-            Adding product...
+            <div className="d-flex align-items-center gap-2">
+              <div className="spinner-border spinner-border-sm" role="status"></div>
+              <span>Adding product to database...</span>
+            </div>
           </Alert>
         )}
         
         {isCreated && (
           <Alert variant="success" className="mb-4">
-            Product added successfully! Redirecting...
+            ✅ Product added successfully! Redirecting...
           </Alert>
         )}
 
@@ -282,7 +375,7 @@ const AddProduct = () => {
               </Form.Group>
             </Col>
 
-            {/* IMAGES */}
+            {/* IMAGES UPDATED - CLOUDINARY */}
             <Col md={6}>
               <div className="ps-md-4">
                 <div className="d-flex align-items-center gap-3 mb-4">
@@ -298,55 +391,111 @@ const AddProduct = () => {
                     <Image size={18} color="white" />
                   </div>
                   <h5 className="fw-bold mb-0" style={{ color: "#2a2a2a" }}>
-                    Product Images (Optional)
+                    Product Images (Max 4)
                   </h5>
                 </div>
 
-                {input.images.map((img, index) => (
+                {/* Instructions */}
+                <div className="alert alert-info mb-4 small">
+                  <strong>Instructions:</strong> You can either upload images from your device or paste image URLs. Recommended size: 500x500px, max 5MB.
+                </div>
+
+                {/* Image upload sections */}
+                {[0, 1, 2, 3].map((index) => (
                   <Form.Group className="mb-4" key={index}>
                     <Form.Label className="fw-semibold mb-3 d-block" style={{ color: "#2a2a2a", fontSize: "14px" }}>
-                      Image {index + 1}
+                      Image {index + 1} {index === 0 && <span className="text-danger">*</span>}
                     </Form.Label>
-                    <Form.Control
-                      value={img}
-                      onChange={(e) => handleImageChange(index, e.target.value)}
-                      placeholder="Enter image URL (optional)"
-                      className="py-3"
-                      style={{
-                        borderRadius: "12px",
-                        border: "2px solid #f0f0f0",
-                        background: "#ffffff",
-                        fontSize: "15px",
-                        transition: "all 0.3s ease",
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = "#ff3e6c";
-                        e.target.style.boxShadow = "0 0 0 3px rgba(255, 62, 108, 0.1)";
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = "#f0f0f0";
-                        e.target.style.boxShadow = "none";
-                      }}
-                    />
 
-                    {/* IMAGE PREVIEW */}
-                    {img && (
-                      <div className="mt-3 p-3 rounded-3" style={{ background: "#f8f9fa", border: "1px solid #e9ecef" }}>
-                        <img
-                          src={img}
-                          alt="preview"
-                          width="100%"
-                          height="120"
+                    {/* UPLOAD OPTIONS */}
+                    <div className="d-flex gap-2 mb-2">
+                      {/* File Upload */}
+                      <div className="position-relative" style={{ flex: 1 }}>
+                        <Form.Control
+                          type="file"
+                          accept="image/jpeg, image/png, image/jpg, image/webp"
+                          onChange={(e) => handleFileUpload(e, index)}
+                          disabled={uploading}
+                          className="py-2"
                           style={{
-                            borderRadius: "8px",
-                            objectFit: "cover",
-                            border: "2px solid #fff",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                          }}
-                          onError={(e) => {
-                            e.target.src = "https://via.placeholder.com/300x120?text=Invalid+URL";
+                            borderRadius: "10px",
+                            cursor: uploading ? "not-allowed" : "pointer",
+                            opacity: uploading ? 0.7 : 1
                           }}
                         />
+                        <div className="position-absolute top-50 end-0 translate-middle-y me-3">
+                          <Upload size={16} color="#666" />
+                        </div>
+                      </div>
+
+                      {/* OR Separator */}
+                      <div className="d-flex align-items-center px-2">
+                        <span className="text-muted small">OR</span>
+                      </div>
+
+                      {/* URL Input */}
+                      <div className="position-relative" style={{ flex: 2 }}>
+                        <Form.Control
+                          type="text"
+                          value={input.images[index] || ""}
+                          onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                          placeholder="Paste image URL"
+                          className="py-2"
+                          style={{
+                            borderRadius: "10px",
+                            border: "2px solid #f0f0f0"
+                          }}
+                        />
+                        {input.images[index] && (
+                          <Button
+                            variant="link"
+                            className="position-absolute top-50 end-0 translate-middle-y p-0 me-2"
+                            onClick={() => removeImage(index)}
+                            style={{ minWidth: "auto" }}
+                          >
+                            <X size={16} color="#dc3545" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* PREVIEW */}
+                    {(previewUrls[index] || input.images[index]) && (
+                      <div className="mt-3 p-3 rounded-3" style={{ 
+                        background: "#f8f9fa", 
+                        border: "1px solid #e9ecef",
+                        position: "relative"
+                      }}>
+                        <img
+                          src={previewUrls[index] || input.images[index]}
+                          alt={`Preview ${index + 1}`}
+                          width="100%"
+                          height="150"
+                          style={{
+                            borderRadius: "8px",
+                            objectFit: "contain",
+                            border: "2px solid #fff",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                            background: "#fff"
+                          }}
+                          onError={(e) => {
+                            e.target.src = "https://via.placeholder.com/300x150?text=Invalid+Image";
+                            e.target.style.objectFit = "cover";
+                          }}
+                        />
+                        
+                        {/* Image Status */}
+                        <div className="mt-2 d-flex justify-content-between align-items-center">
+                          <span className="small text-muted">
+                            {previewUrls[index] ? "Local preview" : "External URL"}
+                          </span>
+                          <span className="small">
+                            {input.images[index]?.startsWith("http") ? 
+                              <span className="text-success">✓ Uploaded</span> : 
+                              <span className="text-warning">Local file</span>
+                            }
+                          </span>
+                        </div>
                       </div>
                     )}
                   </Form.Group>
@@ -360,32 +509,41 @@ const AddProduct = () => {
             <Button
               type="submit"
               className="px-5 py-3 fw-bold"
-              disabled={loading}
+              disabled={loading || uploading || !input.images[0]}
               style={{
                 borderRadius: "12px",
-                background: loading ? "#ccc" : "linear-gradient(135deg, #ff3e6c 0%, #ff7b9c 100%)",
+                background: (loading || uploading || !input.images[0]) ? 
+                  "#ccc" : "linear-gradient(135deg, #ff3e6c 0%, #ff7b9c 100%)",
                 border: "none",
                 fontSize: "16px",
                 minWidth: "200px",
                 transition: "all 0.3s ease",
                 boxShadow: "0 4px 15px rgba(255, 62, 108, 0.3)",
-                opacity: loading ? 0.7 : 1
+                opacity: (loading || uploading || !input.images[0]) ? 0.7 : 1
               }}
               onMouseEnter={(e) => {
-                if (!loading) {
+                if (!loading && !uploading && input.images[0]) {
                   e.target.style.transform = "translateY(-2px)";
                   e.target.style.boxShadow = "0 8px 25px rgba(255, 62, 108, 0.4)";
                 }
               }}
               onMouseLeave={(e) => {
-                if (!loading) {
+                if (!loading && !uploading && input.images[0]) {
                   e.target.style.transform = "translateY(0)";
                   e.target.style.boxShadow = "0 4px 15px rgba(255, 62, 108, 0.3)";
                 }
               }}
             >
-              {loading ? "Adding..." : "Add Product"}
+              {uploading ? "Uploading..." : loading ? "Adding..." : "Add Product"}
             </Button>
+            
+            {!input.images[0] && (
+              <div className="mt-2">
+                <small className="text-danger">
+                  <i>At least one image is required (Image 1)</i>
+                </small>
+              </div>
+            )}
           </div>
         </Form>
       </Card>
