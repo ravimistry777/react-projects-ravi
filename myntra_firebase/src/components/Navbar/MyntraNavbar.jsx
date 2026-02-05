@@ -22,8 +22,11 @@ const MyntraNavbar = () => {
   const { cartItems = [] } = useSelector((state) => state.cart || {});
   const { wishlistItems = [] } = useSelector((state) => state.wishlist || {});
 
+  const [expanded, setExpanded] = useState(false);
+
   const handleSearch = (e) => {
     if (e.key === "Enter") {
+      setExpanded(false);
       navigate(`/search/${search}`);
     }
   };
@@ -81,6 +84,7 @@ const MyntraNavbar = () => {
       <Navbar
         bg="white"
         expand="lg"
+        expanded={expanded}
         className="py-2"
         style={{ 
           borderBottom: "1px solid #f5f5f5",
@@ -92,6 +96,7 @@ const MyntraNavbar = () => {
           <Navbar.Brand
             as={Link}
             to="/"
+            onClick={() => setExpanded(false)}
             className="fw-bold me-4"
             style={{ 
               color: "#ff3e6c", 
@@ -103,19 +108,24 @@ const MyntraNavbar = () => {
           </Navbar.Brand>
 
           <Navbar.Toggle 
+            aria-controls="basic-navbar-nav"
+            onClick={() => setExpanded(expanded ? false : "expanded")}
             style={{
               border: "none",
               boxShadow: "none",
             }}
-          />
+          >
+            <span className="navbar-toggler-icon"></span>
+          </Navbar.Toggle>
 
-          <Navbar.Collapse>
+          <Navbar.Collapse id="basic-navbar-nav">
             {/* main menu */}
-            <Nav className="me-auto ms-4 fw-semibold d-flex align-items-center gap-4">
+            <Nav className="me-auto ms-lg-4 ms-0 fw-semibold d-flex flex-column flex-lg-row align-items-lg-center align-items-start gap-2 gap-lg-4 mt-3 mt-lg-0">
               <Nav.Link
                 as={Link}
                 to="/men"
-                className="position-relative px-2 py-1"
+                onClick={() => setExpanded(false)}
+                className="position-relative px-2 py-1 w-100 w-lg-auto mobile-nav-border"
                 style={{ 
                   fontSize: "14px",
                   color: "#282c3f",
@@ -135,7 +145,8 @@ const MyntraNavbar = () => {
               <Nav.Link
                 as={Link}
                 to="/women"
-                className="position-relative px-2 py-1"
+                onClick={() => setExpanded(false)}
+                className="position-relative px-2 py-1 w-100 w-lg-auto mobile-nav-border"
                 style={{ 
                   fontSize: "14px",
                   color: "#282c3f",
@@ -155,7 +166,8 @@ const MyntraNavbar = () => {
               <Nav.Link
                 as={Link}
                 to="/kids"
-                className="position-relative px-2 py-1"
+                onClick={() => setExpanded(false)}
+                className="position-relative px-2 py-1 w-100 w-lg-auto mobile-nav-border"
                 style={{ 
                   fontSize: "14px",
                   color: "#282c3f",
@@ -174,7 +186,7 @@ const MyntraNavbar = () => {
             </Nav>
 
             {/* search */}
-            <div className="d-flex align-items-center me-4 position-relative w-50">
+            <div className="d-flex align-items-center me-lg-4 me-0 position-relative w-100 w-lg-50 mt-3 mt-lg-0 mb-3 mb-lg-0">
               <div className="position-absolute start-0 ms-3 z-1">
                 <Search 
                   size={16} 
@@ -183,7 +195,7 @@ const MyntraNavbar = () => {
               </div>
               <Form.Control
                 type="search"
-                placeholder="Search for products, brands and more"
+                placeholder="Search for products..."
                 className="ps-5 py-2"
                 style={{
                   borderRadius: "4px",
@@ -215,7 +227,7 @@ const MyntraNavbar = () => {
             </div>
 
             {/* right side menu */}
-            <Nav className="fw-semibold d-flex align-items-center gap-3">
+            <Nav className="fw-semibold d-flex flex-row align-items-center justify-content-between justify-content-lg-end gap-3 w-100 w-lg-auto mb-3 mb-lg-0">
               {/* User Profile */}
               {currentUser ? (
                 <Dropdown>
@@ -239,7 +251,7 @@ const MyntraNavbar = () => {
                       {currentUser.email}
                     </Dropdown.ItemText>
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={handleLogout}>
+                    <Dropdown.Item onClick={() => { handleLogout(); setExpanded(false); }}>
                       <BoxArrowRight className="me-2" />
                       Logout
                     </Dropdown.Item>
@@ -254,7 +266,7 @@ const MyntraNavbar = () => {
                     textDecoration: "none",
                     color: "#282c3f",
                   }}
-                  onClick={() => setShowLoginModal(true)}
+                  onClick={() => { setShowLoginModal(true); setExpanded(false); }}
                 >
                   <PersonCircle size={18} className="mb-1" />
                   <span style={{ fontSize: "11px", fontWeight: "500" }}>Login</span>
@@ -265,6 +277,7 @@ const MyntraNavbar = () => {
               <Nav.Link
                 as={Link}
                 to="/wishlist"
+                onClick={() => setExpanded(false)}
                 className="d-flex flex-column align-items-center px-2 py-1 position-relative"
                 style={{
                   borderRadius: "6px",
@@ -298,6 +311,7 @@ const MyntraNavbar = () => {
               <Nav.Link
                 as={Link}
                 to="/cart"
+                onClick={() => setExpanded(false)}
                 className="d-flex flex-column align-items-center px-2 py-1 position-relative"
                 style={{
                   borderRadius: "6px",
@@ -332,6 +346,7 @@ const MyntraNavbar = () => {
                 <Nav.Link
                   as={Link}
                   to="/admin/products"
+                  onClick={() => setExpanded(false)}
                   className="px-3 py-1 ms-2"
                   style={{
                     borderRadius: "6px",

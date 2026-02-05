@@ -100,7 +100,7 @@ const ProductCard = ({ item }) => {
 
   return (
     <Card
-      className="mb-4 product-card border-0"
+      className="mb-4 product-card border-0 h-100 card-hover shadow-sm"
       style={{
         cursor: "pointer",
         borderRadius: "16px",
@@ -164,12 +164,13 @@ const ProductCard = ({ item }) => {
           <Card.Img
             variant="top"
             src={item.images?.[0] || item.image || "https://via.placeholder.com/300x300?text=Product"}
-            height="300px"
             style={{
+              height: "auto",
+              aspectRatio: "3/4",
               objectFit: "cover",
               transition: "transform 0.5s ease",
             }}
-            className="product-img"
+            className="product-img w-100"
             alt={item.title || "Product"}
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/300x300?text=Product";
@@ -178,13 +179,14 @@ const ProductCard = ({ item }) => {
         </Link>
       </div>
 
-      <Card.Body className="p-4">
+      <Card.Body className="p-2 p-md-4">
         {/* CATEGORY */}
         <Card.Text 
-          className="mb-2 text-uppercase small fw-semibold" 
+          className="mb-1 mb-md-2 text-uppercase small fw-semibold text-truncate" 
           style={{ 
             color: "#ff3e6c", 
-            letterSpacing: "0.5px" 
+            letterSpacing: "0.5px",
+            fontSize: "10px"
           }}
         >
           {item.category || "Category"}
@@ -192,12 +194,12 @@ const ProductCard = ({ item }) => {
 
         {/* PRODUCT TITLE */}
         <Card.Title 
-          className="fw-bold mb-2" 
+          className="fw-bold mb-1 mb-md-2" 
           style={{ 
-            fontSize: "16px", 
+            fontSize: "14px", 
             color: "#2a2a2a",
-            lineHeight: "1.4",
-            height: "44px",
+            lineHeight: "1.3",
+            height: "36px",
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -208,28 +210,28 @@ const ProductCard = ({ item }) => {
         </Card.Title>
 
         {/* RATING */}
-        <div className="d-flex align-items-center gap-2 mb-3">
+        <div className="d-none d-md-flex align-items-center gap-2 mb-2 mb-md-3">
           <div className="d-flex align-items-center gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
               star <= (item.rating || 4) ? (
-                <StarFill key={star} size={14} color="#ffc107" />
+                <StarFill key={star} size={12} color="#ffc107" />
               ) : (
-                <Star key={star} size={14} color="#ddd" />
+                <Star key={star} size={12} color="#ddd" />
               )
             ))}
           </div>
-          <span style={{ fontSize: "13px", color: "#666", fontWeight: "500" }}>
+          <span style={{ fontSize: "12px", color: "#666", fontWeight: "500" }}>
             ({item.ratingCount || "1.2k"})
           </span>
         </div>
 
         {/* PRICE */}
-        <div className="d-flex align-items-center gap-2 mb-3">
+        <div className="d-flex flex-wrap align-items-center gap-1 gap-md-2 mb-2 mb-md-3">
           <span
             className="fw-bold"
             style={{ 
               color: "#2a2a2a", 
-              fontSize: "18px",
+              fontSize: "14px",
               fontWeight: "700"
             }}
           >
@@ -240,7 +242,7 @@ const ProductCard = ({ item }) => {
             <span
               style={{
                 textDecoration: "line-through",
-                fontSize: "14px",
+                fontSize: "12px",
                 color: "#999",
                 fontWeight: "500"
               }}
@@ -251,16 +253,17 @@ const ProductCard = ({ item }) => {
           
           {item.mrp && item.mrp > item.price && (
             <span
+              className="d-none d-md-inline-block"
               style={{
-                fontSize: "12px",
+                fontSize: "10px",
                 color: "#00a853",
                 fontWeight: "600",
                 background: "rgba(0, 168, 83, 0.1)",
-                padding: "2px 6px",
+                padding: "2px 4px",
                 borderRadius: "4px"
               }}
             >
-              Save ₹{item.mrp - item.price}
+              {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
             </span>
           )}
         </div>
@@ -268,7 +271,7 @@ const ProductCard = ({ item }) => {
         {/* ADD TO BAG BUTTON */}
         <Button
           variant="primary"
-          className="w-100 fw-semibold py-2 d-flex align-items-center justify-content-center gap-2"
+          className="w-100 fw-semibold py-1 py-md-2 d-flex align-items-center justify-content-center gap-1 gap-md-2"
           onClick={handleAddToBag}
           disabled={!currentUser}
           style={{
@@ -276,8 +279,8 @@ const ProductCard = ({ item }) => {
               ? "linear-gradient(135deg, #ff3e6c 0%, #ff7b9c 100%)" 
               : "#ccc",
             border: "none",
-            borderRadius: "10px",
-            fontSize: "14px",
+            borderRadius: "8px",
+            fontSize: "12px",
             fontWeight: "600",
             letterSpacing: "0.3px",
             transition: "all 0.3s ease",
@@ -299,20 +302,11 @@ const ProductCard = ({ item }) => {
               e.target.style.boxShadow = "0 2px 8px rgba(255, 62, 108, 0.2)";
             }
           }}
-          title={currentUser ? "Add to cart" : "Login to add to cart"}
         >
-          <Bag size={16} />
-          {currentUser ? "ADD TO BAG" : "LOGIN TO ADD"}
+          <Bag size={14} />
+          <span className="d-none d-md-inline">ADD TO BAG</span>
+          <span className="d-inline d-md-none">ADD</span>
         </Button>
-
-        {/* USER MESSAGE */}
-        {!currentUser && (
-          <div className="text-center mt-2">
-            <small className="text-muted">
-              <i>Login to add items to cart</i>
-            </small>
-          </div>
-        )}
       </Card.Body>
 
       {/* HOVER EFFECTS */}

@@ -3,7 +3,7 @@ import { Card, Form, Button } from "react-bootstrap";
 const Filters = ({ setCategory, setSort, setPriceRange, resetFilters }) => {
   return (
     <Card
-      className="p-4"
+      className="p-3 p-lg-4"
       style={{
         border: "none",
         borderRadius: "16px",

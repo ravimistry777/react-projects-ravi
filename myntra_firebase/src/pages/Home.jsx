@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Spinner, Card } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Card, Button } from "react-bootstrap";
+import { Filter } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsAsync } from "../services/actions/productAction";
 import ProductCard from "../components/ProductCard/ProductCard";
@@ -12,6 +13,7 @@ const Home = () => {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
   const [priceRange, setPriceRange] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     dispatch(getAllProductsAsync());
@@ -44,10 +46,12 @@ const Home = () => {
 
       {/* BANNER */}
       <div
-        className="mb-4 hero-banner"
+        className="mb-4 hero-banner shadow-sm"
         style={{
           width: "100%",
-          height: "300px",
+          minHeight: "180px",
+          height: "auto",
+          aspectRatio: "3/1",
           borderRadius: "12px",
           background:
             "url('https://www.bandhan.bank.in/sites/default/files/2021-04/Bandhan_Myntra_Offer_Banner_02.jpg') no-repeat center/cover",
@@ -55,8 +59,20 @@ const Home = () => {
       ></div>
 
       <Container>
-        <Row>
-          <Col md={3}>
+        {/* Mobile Filter Toggle */}
+        <div className="d-md-none mb-3">
+          <Button 
+            variant="outline-dark" 
+            className="w-100 d-flex align-items-center justify-content-center gap-2"
+            onClick={() => setShowFilters(!showFilters)}
+            style={{ borderRadius: "8px" }}
+          >
+            <Filter size={18} /> {showFilters ? "Hide Filters" : "Show Filters"}
+          </Button>
+        </div>
+
+        <Row className="g-4">
+          <Col lg={3} md={4} className={`mb-3 ${showFilters ? 'd-block' : 'd-none d-md-block'}`}>
             <Filters
               setCategory={setCategory}
               setSort={setSort}
@@ -64,14 +80,24 @@ const Home = () => {
               resetFilters={resetFilters}
             />
           </Col>
-          <Col md={9}>
-            <Row className="mb-4">
+          {/* Mobile Filter Toggle could go here, but for now we hide filters on mobile or keep them stacked. 
+              Let's keep them stacked but visible for now by removing d-none if user wants them.
+              Actually, usually filters on mobile are hidden behind a button. 
+              For this task, I will make them stack normally but ensure layout is clean.
+           */}
+           
+           {/* Let's try a better layout: Filters on top for mobile? No, sidebar is standard. 
+               I'll use the standard stacking: Filters on top on mobile. 
+           */}
+           
+          <Col lg={9} md={8}>
+            <Row className="mb-4 g-2 g-md-3">
 
               {/* MEN */}
-              <Col md={4} className="mb-3">
+              <Col xs={4} sm={4}>
                 <Link to="/men" className="text-decoration-none text-dark">
                   <Card
-                    className="shadow-sm category-card"
+                    className="shadow-sm category-card border-0 h-100"
                     style={{
                       cursor: "pointer",
                       borderRadius: "12px",
@@ -83,16 +109,16 @@ const Home = () => {
                       height="160"
                       style={{ objectFit: "cover" }}
                     />
-                    <Card.Body className="text-center fw-bold">MEN</Card.Body>
+                    <Card.Body className="text-center fw-bold py-1 px-1 small">MEN</Card.Body>
                   </Card>
                 </Link>
               </Col>
 
               {/* WOMEN */}
-              <Col md={4} className="mb-3">
+              <Col xs={4} sm={4}>
                 <Link to="/women" className="text-decoration-none text-dark">
                   <Card
-                    className="shadow-sm category-card"
+                    className="shadow-sm category-card border-0 h-100"
                     style={{
                       cursor: "pointer",
                       borderRadius: "12px",
@@ -104,16 +130,16 @@ const Home = () => {
                       height="160"
                       style={{ objectFit: "cover" }}
                     />
-                    <Card.Body className="text-center fw-bold">WOMEN</Card.Body>
+                    <Card.Body className="text-center fw-bold py-1 px-1 small">WOMEN</Card.Body>
                   </Card>
                 </Link>
               </Col>
 
               {/* KIDS */}
-              <Col md={4} className="mb-3">
+              <Col xs={4} sm={4}>
                 <Link to="/kids" className="text-decoration-none text-dark">
                   <Card
-                    className="shadow-sm category-card"
+                    className="shadow-sm category-card border-0 h-100"
                     style={{
                       cursor: "pointer",
                       borderRadius: "12px",
@@ -125,7 +151,7 @@ const Home = () => {
                       height="160"
                       style={{ objectFit: "cover" }}
                     />
-                    <Card.Body className="text-center fw-bold">KIDS</Card.Body>
+                    <Card.Body className="text-center fw-bold py-1 px-1 small">KIDS</Card.Body>
                   </Card>
                 </Link>
               </Col>
@@ -135,12 +161,12 @@ const Home = () => {
             {/* PRODUCTS */}
             {isLoading ? (
               <div className="text-center py-5">
-                <Spinner animation="border" />
+                <Spinner animation="border" variant="danger" />
               </div>
             ) : (
-              <Row>
+              <Row className="g-2 g-md-4">
                 {filtered.map((item) => (
-                  <Col md={4} key={item.id} className="mb-4">
+                  <Col xs={6} sm={6} lg={4} xl={3} key={item.id}>
                     <ProductCard item={item} />
                   </Col>
                 ))}
