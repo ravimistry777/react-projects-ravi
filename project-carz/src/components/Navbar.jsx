@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiHome, FiPlusCircle, FiSearch, FiPhone, FiChevronDown } from 'react-icons/fi'
 
 const NavbarComponent = () => {
   const navigate = useNavigate()
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   
   const carCategories = [
     { name: 'Sedan', icon: 'fas fa-car' },
@@ -17,92 +21,139 @@ const NavbarComponent = () => {
 
   const handleCategorySelect = (category) => {
     navigate(`/find-cars?category=${category.toLowerCase()}`)
+    setShowDropdown(false)
+    setExpanded(false)
   }
 
   return (
-    <Navbar expand="lg" className="navbar-premium fixed-top">
+    <Navbar expanded={expanded} expand="lg" className="navbar-premium">
       <Container>
         <Navbar.Brand
           as={Link}
           to="/"
           className="navbar-brand-premium"
-          style={{ cursor: 'pointer' }}
+          onClick={() => setExpanded(false)}
         >
           RAVI'S CARZ HUB
         </Navbar.Brand>
 
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle 
+          aria-controls="basic-navbar-nav" 
+          className="navbar-toggler-premium"
+          onClick={() => setExpanded(!expanded)}
+        />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
-
-            <Nav.Link
-              as={Link}
-              to="/add-car"
-              className="nav-link-premium"
-            >
-              <i className="fas fa-plus me-2"></i>
-              Add Car
-            </Nav.Link>
+          <Nav className="ms-auto align-items-center">
 
             <Nav.Link
               as={Link}
               to="/"
               className="nav-link-premium"
+              onClick={() => setExpanded(false)}
             >
-              <i className="fas fa-home me-2"></i>
-              Home
+              <FiHome />
+              <span>Home</span>
             </Nav.Link>
 
-            <Dropdown className="mx-2">
-              <Dropdown.Toggle className="nav-link-premium" style={{ background: 'none', border: 'none' }}>
-                <i className="fas fa-search me-2"></i>
-                Find Cars
+            <Nav.Link
+              as={Link}
+              to="/add-car"
+              className="nav-link-premium"
+              onClick={() => setExpanded(false)}
+            >
+              <FiPlusCircle />
+              <span>Add Car</span>
+            </Nav.Link>
+
+            <Dropdown 
+              className="mx-2"
+              onToggle={(isOpen) => setShowDropdown(isOpen)}
+              show={showDropdown}
+            >
+              <Dropdown.Toggle 
+                className="nav-link-premium d-flex align-items-center" 
+                style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
+              >
+                <FiSearch />
+                <span className="mx-2">Find Cars</span>
+                <motion.div
+                  animate={{ rotate: showDropdown ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <FiChevronDown />
+                </motion.div>
               </Dropdown.Toggle>
-              <Dropdown.Menu className="dropdown-menu-premium" style={{
-                background: 'rgba(255,255,255,0.95)',
-                backdropFilter: 'blur(10px)',
-                border: 'none',
-                borderRadius: '15px',
-                padding: '10px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
-              }}>
-                {carCategories.map((category, index) => (
-                  <Dropdown.Item
-                    key={index}
-                    onClick={() => handleCategorySelect(category.name)}
+
+              <AnimatePresence>
+                {showDropdown && (
+                  <Dropdown.Menu 
+                    as={motion.div}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="dropdown-menu-premium border-0 shadow-lg p-0"
                     style={{
-                      padding: '12px 20px',
-                      borderRadius: '10px',
-                      margin: '5px 0',
-                      fontWeight: '500',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#8B0000'
-                      e.target.style.color = 'white'
-                      // e.target.style.transform = 'translateX(20px)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'none'
-                      e.target.style.color = 'inherit'
-                      e.target.style.transform = 'translateX(0)'
+                      marginTop: '0px',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--bg-surface)',
+                      minWidth: '220px',
+                      border: '1px solid var(--border-strong)'
                     }}
                   >
-                    <i className={`${category.icon} me-2`}></i>
-                    {category.name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => {
+                        navigate('/find-cars')
+                        setShowDropdown(false)
+                        setExpanded(false)
+                      }}
+                      className="dropdown-item-premium"
+                      style={{ fontWeight: 600, color: 'var(--primary)' }}
+                    >
+                      <i className="fas fa-th-large me-2"></i>
+                      Browse All Cars
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    {carCategories.map((category, index) => (
+                      <Dropdown.Item
+                        key={index}
+                        onClick={() => handleCategorySelect(category.name)}
+                        className="px-3 py-3 my-0 border-bottom"
+                        style={{
+                          fontSize: '0.9rem',
+                          color: 'var(--text-secondary)',
+                          transition: 'all 0.2s',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'var(--primary)'
+                          e.target.style.color = 'white'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'transparent'
+                          e.target.style.color = 'var(--text-secondary)'
+                        }}
+                      >
+                        <i className={`${category.icon} me-2`} style={{ width: '20px' }}></i>
+                        {category.name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                )}
+              </AnimatePresence>
             </Dropdown>
 
             <Nav.Link
               as={Link}
               to="/contact"
               className="nav-link-premium"
+              onClick={() => setExpanded(false)}
             >
-              <i className="fas fa-envelope me-2"></i>
-              Contact Us
+              <FiPhone />
+              <span>Contact</span>
             </Nav.Link>
+
           </Nav>
         </Navbar.Collapse>
       </Container>
