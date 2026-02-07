@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Col, Form, Row, Modal } from "react-bootstrap";
 import { getStorageData, setStorageData } from "../services/storageData";
 
-const AddMovie = ({ show, handleClose,onAddMovie }) => {
+const AddMovie = ({ show, handleClose }) => {
     const initialState = {
         title: "",
         director: "",
@@ -12,13 +12,14 @@ const AddMovie = ({ show, handleClose,onAddMovie }) => {
         duration: "",
         description: "",
         poster: "",
-        cast: ""
+        cast: "",
+        music: ""
     }
 
     const [inputForm, setInputForm] = useState(initialState);
 
     const handleChanged = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setInputForm({
             ...inputForm,
             [name]: value
@@ -39,7 +40,7 @@ const AddMovie = ({ show, handleClose,onAddMovie }) => {
             description: inputForm.description,
             poster: inputForm.poster,
             cast: inputForm.cast.split(',').map(c => c.trim()),
-            music: ""
+            music: inputForm.music
         };
 
         let data = getStorageData();
@@ -55,174 +56,170 @@ const AddMovie = ({ show, handleClose,onAddMovie }) => {
         handleClose();
     }
 
-    return(
-        <Modal show={show} onHide={handleCloseModal} size="lg">
-            <Modal.Header closeButton className="bg-dark text-white">
-                <Modal.Title>Add Movie Details</Modal.Title>
+    return (
+        <Modal show={show} onHide={handleCloseModal} centered size="lg">
+            <Modal.Header closeButton>
+                <Modal.Title className="fw-bold">Add New Movie</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Title *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="title" 
-                                value={inputForm.title} 
-                                onChange={handleChanged} 
-                                placeholder="Enter Movie Title" 
-                                required
-                            />
+                    <Row>
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Movie Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="title"
+                                    value={inputForm.title}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Enter title"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Director *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="director" 
-                                value={inputForm.director} 
-                                onChange={handleChanged} 
-                                placeholder="Enter Director Name" 
-                                required
-                            />
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Director</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="director"
+                                    value={inputForm.director}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Enter director name"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Year *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="number" 
-                                name="year" 
-                                value={inputForm.year} 
-                                onChange={handleChanged} 
-                                placeholder="Enter Release Year" 
-                                min="1900"
-                                max="2030"
-                                required
-                            />
+                        <Col md={3} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Year</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="year"
+                                    value={inputForm.year}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Year"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Rating *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="number" 
-                                name="rating" 
-                                value={inputForm.rating} 
-                                onChange={handleChanged} 
-                                placeholder="Enter Rating (0-10)" 
-                                step="0.1"
-                                min="0"
-                                max="10"
-                                required
-                            />
+                        <Col md={3} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Rating</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="rating"
+                                    value={inputForm.rating}
+                                    onChange={handleChanged}
+                                    step="0.1"
+                                    max="10"
+                                    min="0"
+                                    className="modern-input"
+                                    placeholder="Rating"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Genre *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="genre" 
-                                value={inputForm.genre} 
-                                onChange={handleChanged} 
-                                placeholder="Action, Drama, Sci-Fi" 
-                                required
-                            />
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Genre (comma separated)</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="genre"
+                                    value={inputForm.genre}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Action, Drama"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Duration *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="duration" 
-                                value={inputForm.duration} 
-                                onChange={handleChanged} 
-                                placeholder="2h 22m" 
-                                required
-                            />
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Duration</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="duration"
+                                    value={inputForm.duration}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="e.g. 2h 30m"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Poster URL *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="poster" 
-                                value={inputForm.poster} 
-                                onChange={handleChanged} 
-                                placeholder="https://themeg.com/poster.jpg" 
-                                required
-                            />
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Poster URL</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="poster"
+                                    value={inputForm.poster}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="https://..."
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Cast *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                type="text" 
-                                name="cast" 
-                                value={inputForm.cast} 
-                                onChange={handleChanged} 
-                                placeholder="Actor 1, Actor 2, Actor 3" 
-                                required
-                            />
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Background Music URL (Optional)</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="music"
+                                    value={inputForm.music}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Enter song URL"
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="3">
-                            Description *
-                        </Form.Label>
-                        <Col sm="9">
-                            <Form.Control 
-                                as="textarea" 
-                                rows={3}
-                                name="description" 
-                                value={inputForm.description} 
-                                onChange={handleChanged} 
-                                placeholder="Enter movie plot description..." 
-                                required
-                            />
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Main Cast (comma separated)</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="cast"
+                                    value={inputForm.cast}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Cast names"
+                                    required
+                                />
+                            </Form.Group>
                         </Col>
-                    </Form.Group>
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label className="form-label">Description</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    name="description"
+                                    value={inputForm.description}
+                                    onChange={handleChanged}
+                                    className="modern-input"
+                                    placeholder="Movie description..."
+                                    required
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancel
+                    <Button variant="link" onClick={handleCloseModal}>
+                        Close
                     </Button>
-                    <Button type="submit" variant="success">
+                    <Button type="submit" className="btn-premium">
                         Add Movie
                     </Button>
                 </Modal.Footer>
             </Form>
         </Modal>
-    )
-}
+    );
+};
 
 export default AddMovie;

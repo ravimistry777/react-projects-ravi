@@ -1,70 +1,80 @@
 import React from 'react';
-import { Card, Badge, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { getStorageData, setStorageData } from '../services/storageData';
+import { useNavigate } from "react-router-dom";
+import { Button, Card, Badge } from "react-bootstrap";
+import { FaEdit, FaTrash, FaEye, FaStar } from "react-icons/fa";
 
-const MovieCard = ({ movie, onEdit,onDeleteMovie }) => {
-    const handleDelete = () => {
-        if(window.confirm(`Are you sure you want to delete "${movie.title}"?`)){
-            let data = getStorageData();
-            let updateData = data.filter(v => v.id !== movie.id);
-            setStorageData(updateData);
-            window.location.reload();
-        }
-    }
+const MovieCard = ({ movie, onEdit, onDelete }) => {
+    const navigate = useNavigate();
 
     return (
-        <Card className="movie-card text-white h-100">
-            <div className="position-relative">
-                <Card.Img 
-                    variant="top" 
-                    src={movie.poster} 
-                    className="movie-poster"
-                    onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300x450/333/fff?text=No+Image';
+        <Card className="movie-card h-100 position-relative" onClick={() => navigate(`/movie/${movie.id}`)} style={{ cursor: 'pointer' }}>
+            <div className="card-img-container position-relative overflow-hidden">
+                {/* Blurred Background Layer for Fit */}
+                <div 
+                    className="position-absolute w-100 h-100" 
+                    style={{ 
+                        backgroundImage: `url(${movie.poster})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        filter: 'blur(10px) brightness(0.5)',
+                        transform: 'scale(1.1)' // Prevent blur edges
                     }}
                 />
-                <Badge bg="warning" text="dark" className="rating-badge">
-                    ☆ {movie.rating}
-                </Badge>
-            </div>
-            <Card.Body className="d-flex flex-column">
-                <Card.Title className="fw-bold">{movie.title}</Card.Title>
-                <Card.Text className="text-warning mb-2">
-                    {movie.year} • {movie.duration}
-                </Card.Text>
-                <Card.Text className="flex-grow-1">
-                    {movie.description.length > 100 
-                        ? `${movie.description.substring(0, 100)}...` 
-                        : movie.description
-                    }
-                </Card.Text>
-                <div className="mb-3">
-                    {movie.genre && movie.genre.map((genre, index) => (
-                        <Badge 
-                            key={index} 
-                            bg="outline-light" 
-                            text="light" 
-                            className="genre-badge"
+                
+                {/* Main Poster Image - Contained */}
+                <Card.Img
+                    variant="top"
+                    src={movie.poster}
+                    alt={movie.title}
+                    className="position-relative h-100 w-100"
+                    style={{ objectFit: 'contain', zIndex: 1 }}
+                />
+                
+                <div className="card-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center opacity-0 hover-opacity-100 transition-opacity bg-dark-overlay" style={{ zIndex: 2 }}>
+                     <div className="d-flex gap-2">
+                        <Button 
+                            variant="light" 
+                            size="sm" 
+                            className="rounded-circle p-2 d-flex align-items-center justify-content-center border-0"
+                            style={{ 
+                                width: '40px', 
+                                height: '40px',
+                                background: '#DBC2A6', /* Beige */
+                                color: '#414A37' /* Dark Olive Text */
+                            }}
+                            onClick={(e) => { e.stopPropagation(); navigate(`/movie/${movie.id}`); }}
                         >
-                            {genre}
-                        </Badge>
-                    ))}
-                </div>
-                <div className="d-flex gap-2">
-                    <Link to={`/movie/${movie.id}`} className="flex-grow-1">
-                        <Button variant="outline-light" className="w-100">
-                            View Details
+                            <FaEye />
                         </Button>
-                    </Link>
-                    <Button variant="outline-warning" onClick={() => onEdit(movie.id)}>
-                        Edit
-                    </Button>
-                    <Button variant="outline-danger" onClick={handleDelete}>
-                        Delete
-                    </Button>
+                        <Button 
+                            variant="dark" 
+                            size="sm" 
+                            className="rounded-circle p-2 d-flex align-items-center justify-content-center border border-light"
+                            style={{ 
+                                width: '40px', 
+                                height: '40px',
+                                background: '#99744A', /* Bronze */
+                                color: '#fff'
+                            }}
+                            onClick={(e) => { e.stopPropagation(); onEdit(movie.id); }}
+                        >
+                            <FaEdit />
+                        </Button>
+                     </div>
                 </div>
-            </Card.Body>
+
+                <div className="rating-tag" style={{ zIndex: 3 }}>
+                    <FaStar /> {movie.rating}
+                </div>
+            </div>
+
+            <div className="p-2">
+                <h6 className="fw-bold mb-0 text-truncate text-main" style={{ fontSize: '0.9rem' }}>{movie.title}</h6>
+                <div className="d-flex justify-content-between align-items-center small text-muted mt-1">
+                    <span>{movie.year}</span>
+                    <span className="text-truncate" style={{ maxWidth: '60px' }}>{movie.genre?.[0]}</span>
+                </div>
+            </div>
         </Card>
     );
 };

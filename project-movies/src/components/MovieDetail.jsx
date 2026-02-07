@@ -1,127 +1,152 @@
-import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button, Badge } from "react-bootstrap";
+import { FaArrowLeft, FaPlay, FaPause } from "react-icons/fa";
+import { getStorageData } from "../services/storageData";
 
-const MovieDetail = ({ movies = [] }) => {
+const MovieDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [movie, setMovie] = useState(null);
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    const movie = movies.find(m => m.id === parseInt(id, 10));
-    let audio;
+    const data = getStorageData();
+    const foundMovie = data.find(m => String(m.id) === String(id));
+    if (foundMovie) {
+      setMovie(foundMovie);
+    }
+  }, [id]);
 
+  useEffect(() => {
     if (movie && movie.music) {
-      audio = new Audio(movie.music);
-      audio.volume = 1;
-      audio.play().catch(err => console.log("Autoplay blocked:", err));
+      audioRef.current = new Audio(movie.music);
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.5;
+
+      // Autoplay attempt
+      const playAudio = () => {
+        audioRef.current.play()
+          .then(() => setIsPlaying(true))
+          .catch(err => console.warn("Autoplay blocked. User interaction needed:", err));
+      };
+
+      playAudio();
     }
 
     return () => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
     };
-  }, [id, movies]);
+  }, [movie]);
 
-  if (!Array.isArray(movies) || movies.length === 0) {
-    return (
-      <Container className="text-center py-5">
-        <h2>Loading...</h2>
-        <p>Movie data is not available right now.</p>
-        <Link to="/">
-          <Button variant="primary" className="mt-3">
-            Back to Movies
-          </Button>
-        </Link>
-      </Container>
-    );
-  }
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => console.error("Playback failed:", err));
+    }
+  };
 
-  const movie = movies.find(m => m.id === parseInt(id, 10));
-
-  if (!movie) {
-    return (
-      <Container className="text-center py-5">
-        <h2>Movie not found</h2>
-        <Link to="/">
-          <Button variant="primary" className="mt-3">
-            Back to Movies
-          </Button>
-        </Link>
-      </Container>
-    );
-  }
+  if (!movie) return <div className="text-center py-5 text-muted">Loading...</div>;
 
   return (
-    <Container>
-      <Link to="/">
-        <Button variant="outline-light" className="mb-4">
-          ← Back to Movies
-        </Button>
-      </Link>
+    <div className="movie-detail-container pb-5 position-relative">
+      <div className="detail-backdrop">
+        <img src={movie.poster} alt="" className="detail-backdrop-img" />
+      </div>
       
-      <Row className="g-4">
-        <Col md={4}>
-          <Card className="border-0">
-            <Card.Img 
-              variant="top" 
-              src={movie.poster} 
-              className="movie-detail-poster"
-            />
-          </Card>
-        </Col>
-        
-        <Col md={8}>
-          <div className="text-white">
-            <div className="d-flex justify-content-between align-items-start mb-3">
-              <h1 className="display-4 fw-bold">{movie.title}</h1>
-              <Badge bg="warning" text="dark" className="fs-6 p-2">
-                ★ {movie.rating}/10
-              </Badge>
+      <Container className="position-relative">
+        <Button
+          onClick={() => navigate("/")}
+          className="mb-4 d-flex align-items-center gap-2 btn-premium-outline"
+          style={{ width: 'fit-content' }}
+        >
+          <FaArrowLeft /> BACK TO GALLERY
+        </Button>
+
+        <Row className="g-5">
+          <Col lg={4}>
+            <div className="detail-poster-wrapper shadow-lg">
+              <img
+                src={movie.poster}
+                alt={movie.title}
+                className="img-fluid rounded-3"
+                style={{ width: '100%', maxHeight: '600px', objectFit: 'cover' }}
+              />
             </div>
-            
-            <div className="mb-4">
-              {(movie.genre || []).map((genre, index) => (
-                <Badge 
-                  key={index} 
-                  bg="outline-light" 
-                  text="light" 
-                  className="me-2 mb-2 fs-6 p-2"
-                >
-                  {genre}
+          </Col>
+
+          <Col lg={8}>
+            <div className="ps-md-4">
+              <div className="d-flex align-items-center gap-3 mb-3">
+                <Badge className="px-3 py-2" style={{ backgroundColor: 'var(--primary)', color: '#fff' }}>
+                  {movie.rating} IMDB
                 </Badge>
-              ))}
-            </div>
-            
-            <Row className="mb-4">
-              <Col sm={6}>
-                <p><strong>Year:</strong> {movie.year}</p>
-                <p><strong>Duration:</strong> {movie.duration}</p>
-              </Col>
-              <Col sm={6}>
-                <p><strong>Director:</strong> {movie.director}</p>
-              </Col>
-            </Row>
-            
-            <div className="mb-4">
-              <h4>Overview</h4>
-              <p className="fs-5">{movie.description}</p>
-            </div>
-            
-            <div className="mb-4">
-              <h4>Cast</h4>
-              <Row>
-                {(movie.cast || []).map((actor, index) => (
-                  <Col key={index} xs={6} sm={4} md={3}>
-                    <p className="mb-1">• {actor}</p>
-                  </Col>
-                ))}
+
+                <Button
+                  onClick={toggleMusic}
+                  className="btn-premium px-4 d-flex align-items-center gap-2"
+                  style={{ borderRadius: '50px', padding: '8px 20px' }}
+                >
+                  {isPlaying ? <FaPause /> : <FaPlay />}
+                  {isPlaying ? "PAUSE THEME" : "PLAY THEME"}
+                </Button>
+
+                {isPlaying && (
+                  <div className="music-indicator">
+                    <div className="music-bars">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                    <small className="fw-bold" style={{ color: 'var(--accent)' }}>THEME PLAYING</small>
+                  </div>
+                )}
+              </div>
+
+              <h1 className="display-3 fw-bold mb-2" style={{ color: 'var(--text-main)' }}>{movie.title}</h1>
+              <p className="fw-bold fs-5 mb-4" style={{ color: 'var(--accent)' }}>{movie.year} • {movie.director} • {movie.duration}</p>
+
+              <div className="mb-4">
+                <h5 className="text-uppercase small letter-spacing-2 mb-3" style={{ color: 'var(--text-muted)' }}>Plot Summary</h5>
+                <p className="fs-5 leading-relaxed" style={{ maxWidth: '800px', color: 'var(--text-main)' }}>
+                  {movie.description}
+                </p>
+              </div>
+
+              <Row className="mb-4">
+                <Col md={6}>
+                  <h5 className="text-uppercase small letter-spacing-2 mb-3" style={{ color: 'var(--text-muted)' }}>Key Genres</h5>
+                  <div className="d-flex flex-wrap gap-2">
+                    {movie.genre?.map((g, i) => (
+                      <Badge 
+                        key={i} 
+                        className="px-3 py-2 border"
+                        style={{ backgroundColor: 'var(--surface-alt)', color: 'var(--text-main)', borderColor: 'var(--border)' }}
+                      >
+                        {g}
+                      </Badge>
+                    ))}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <h5 className="text-uppercase small letter-spacing-2 mb-3" style={{ color: 'var(--text-muted)' }}>Starring</h5>
+                  <p style={{ color: 'var(--text-secondary)' }}>{Array.isArray(movie.cast) ? movie.cast.join(', ') : movie.cast}</p>
+                </Col>
               </Row>
             </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 
