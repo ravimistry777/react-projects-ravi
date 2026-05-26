@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa; /* Off-white / very light gray */
+  color: #1a1a1a; /* Dark charcoal */
+  overflow-x: hidden;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Light Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.glass:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(132, 169, 140, 0.3); /* Sage green border */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* Animated Gradient Text - Sage Green */
+.gradientText {
+  background: linear-gradient(
+    to right,
+    #52796f, /* Darker sage */
+    #84a98c, /* Sage */
+    #cad2c5, /* Light sage */
+    #52796f  /* Darker sage */
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 8s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Subtle background textures */
+.bg-texture {
+  background-image: radial-gradient(#cad2c5 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Destination Swiper - Allow cards to overflow and pop out on hover */
+.destination-swiper-wrapper {
+  overflow: visible !important;
+}
+
+.destination-swiper,
+.destination-swiper .swiper-wrapper,
+.destination-swiper .swiper-slide {
+  overflow: visible !important;
+}
+
+.destination-swiper .swiper-slide {
+  transition: z-index 0s;
+}
