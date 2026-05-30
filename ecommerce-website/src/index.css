@@ -1,0 +1,583 @@
+/* index.css - Ultra Premium Design System */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  --bg-primary: #fffef7;
+  --bg-secondary: #fbfaf6;
+  --bg-tertiary: #f8f5ee;
+  --bg-card: #ffffff;
+  --accent-primary: #c17f59;
+  --accent-secondary: #d4a373;
+  --accent-tertiary: #e9d5c1;
+  --accent-gold: #b8860b;
+  --text-primary: #2c2c2a;
+  --text-secondary: #6b6b68;
+  --text-tertiary: #a3a39f;
+  --border-color: rgba(193, 127, 89, 0.15);
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.12);
+  --gradient-gold: linear-gradient(135deg, #c17f59 0%, #d4a373 50%, #e9d5c1 100%);
+  --gradient-sunset: linear-gradient(135deg, #f5e6d3 0%, #fffef7 100%);
+  --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Playfair Display', 'Cormorant Garamond', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+  width: 20px;
+  height: 20px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.2s ease;
+}
+
+.custom-cursor-hover {
+  transform: scale(3);
+  background: var(--accent-gold);
+}
+
+/* Elegant Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Premium Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation Classes */
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.8s var(--transition-smooth) forwards;
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight 0.8s var(--transition-smooth) forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.6s var(--transition-smooth) forwards;
+}
+
+/* Glass Morphism Cards */
+.glass-card-premium {
+  background: rgba(255, 254, 247, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(193, 127, 89, 0.2);
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.5s var(--transition-smooth);
+}
+
+.glass-card-premium:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(193, 127, 89, 0.4);
+  background: rgba(255, 254, 247, 0.95);
+}
+
+/* Premium Button Styles */
+.btn-premium {
+  background: var(--gradient-gold);
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  padding: 14px 36px;
+  border-radius: 50px;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--transition-smooth);
+  z-index: 1;
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+  z-index: -1;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(193, 127, 89, 0.3);
+}
+
+.btn-premium:hover::before {
+  left: 100%;
+}
+
+.btn-outline-premium {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 2px solid var(--accent-primary);
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-outline-premium:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(193, 127, 89, 0.2);
+}
+
+/* Image Hover Effects */
+.image-zoom-effect {
+  overflow: hidden;
+  position: relative;
+  border-radius: 20px;
+}
+
+.image-zoom-effect img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition-smooth);
+}
+
+.image-zoom-effect:hover img {
+  transform: scale(1.08);
+}
+
+.image-zoom-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(193, 127, 89, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.image-zoom-effect:hover::after {
+  opacity: 1;
+}
+
+/* Shimmer Loading Effect */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Text Gradient */
+.text-gradient {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* Floating Elements */
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+.pulse-animation {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Rotate Animation */
+.rotate-animation {
+  animation: rotate 20s linear infinite;
+}
+
+/* index.css - Add these critical button styles */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  --bg-primary: #fffef7;
+  --bg-secondary: #fbfaf6;
+  --bg-tertiary: #f8f5ee;
+  --bg-card: #ffffff;
+  --accent-primary: #c17f59;
+  --accent-secondary: #d4a373;
+  --accent-tertiary: #e9d5c1;
+  --accent-gold: #b8860b;
+  --text-primary: #2c2c2a;
+  --text-secondary: #6b6b68;
+  --text-tertiary: #a3a39f;
+  --border-color: rgba(193, 127, 89, 0.15);
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.12);
+  --gradient-gold: linear-gradient(135deg, #c17f59 0%, #d4a373 50%, #e9d5c1 100%);
+  --gradient-sunset: linear-gradient(135deg, #f5e6d3 0%, #fffef7 100%);
+  --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ========== NAVBAR LINK STYLES ========== */
+.navbar-nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  transition: width 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: var(--accent-primary);
+}
+
+.navbar-link:hover::after {
+  width: 100%;
+}
+
+/* ========== FILTER BUTTON STYLES ========== */
+.filter-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  border-radius: 50px;
+  padding: 0.6rem 1.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s var(--transition-smooth);
+  letter-spacing: 0.3px;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.filter-btn-active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.filter-btn-active:hover {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+  color: white;
+}
+
+/* ========== CARD BUTTON STYLES ========== */
+.product-card-btn {
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--transition-smooth);
+  color: var(--text-primary);
+}
+
+.product-card-btn:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ========== CART BUTTON STYLES ========== */
+.cart-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s var(--transition-smooth);
+  box-shadow: var(--shadow-sm);
+}
+
+.cart-trigger-btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--accent-primary);
+}
+
+/* ========== PRIMARY BUTTON ========== */
+.btn-premium {
+  background: var(--gradient-gold);
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  padding: 0.875rem 2.25rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(193, 127, 89, 0.3);
+}
+
+/* ========== OUTLINE BUTTON ========== */
+.btn-outline-premium {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1.5px solid var(--accent-primary);
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s var(--transition-smooth);
+}
+
+.btn-outline-premium:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ========== CLOSE BUTTON ========== */
+.btn-close-custom {
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--transition-smooth);
+  color: var(--text-secondary);
+}
+
+.btn-close-custom:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* ========== QUANTITY BUTTON ========== */
+.btn-qty {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-qty:hover {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+/* ========== TEXT LINK ========== */
+.text-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.text-link:hover {
+  color: var(--accent-primary);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .filter-btn {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.75rem;
+  }
+
+  .btn-premium {
+    padding: 0.75rem 1.8rem;
+    font-size: 0.9rem;
+  }
+
+  .cart-trigger-btn {
+    padding: 0.4rem 1rem;
+  }
+}
